@@ -1,0 +1,39 @@
+{
+	"bsonType": "object",
+	"permission": {
+		"create": true,
+		"delete": true,
+		"read": true,
+		"update": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"askInfo": {
+			"bsonType": "array",
+			"title": "答题信息"
+		},
+		"number": {
+			"bsonType": "string",
+			"title": "电话号码"
+		},
+		"time": {
+			"bsonType": "timestamp",
+			"title": "时间"
+		},
+		"username": {
+			"bsonType": "string",
+			"title": "姓名"
+		},
+		"position": {
+			"bsonType": "string",
+			"title": "职称"
+		},
+		"sum": {
+			"bsonType": "array",
+			"title": "各答题权重"
+		}
+	},
+	"required": []
+}

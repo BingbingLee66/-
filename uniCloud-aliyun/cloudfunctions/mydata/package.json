@@ -1,0 +1,7 @@
+{
+  "name": "mydata",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
