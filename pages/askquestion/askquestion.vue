@@ -443,9 +443,15 @@ export default {
       }
       .activeColorRight {
         background-color: #ece1f8be;
+        animation: load 0.4s 1 linear forwards;
       }
+      @keyframes load {
+		    0% { width: 0; }
+		    100% { width: 81%;  }
+		  }
       .activeColorNo {
         background-color: #fff0cf;
+        animation: load 0.4s 1 linear forwards;
       }
       .p-change-ask {
         margin: 120rpx 20rpx;
