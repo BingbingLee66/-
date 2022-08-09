@@ -225,9 +225,8 @@ export default {
   }
   .p-sort{
     height: 35rpx;
-    position:absolute;
-    right: 15rpx;
-    top:180rpx
+    padding: 5rpx 0;
+    float: right;
   }
   .p-user-list {
     display: flex;

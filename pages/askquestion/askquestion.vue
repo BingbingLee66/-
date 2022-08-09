@@ -4,10 +4,10 @@
       <view class="p-contennt-item">
         <view class="p-index-item">
           <text v-if="!islastItem" class="p-item-counttext">{{
-            hasWritedList.length + 1
+              hasWritedList.length + 1
           }}</text>
           <text v-else class="p-item-counttext">{{
-            hasWritedList.length
+              hasWritedList.length
           }}</text>
           <text class="p-item-text" @click="to">/180</text>
         </view>
@@ -18,21 +18,17 @@
         <view class="p-index-tips">
           请凭您在工作状态中的第一感觉快速选择~~
         </view>
-        <view
-          class="p-index-ask"
-          :class="{ activeColorRight: activeColorsRight }"
-          @click="activeColorRight"
-        >
-          <text>是</text>
-          <!-- <img class="p-ask-tipsimg"  /> -->
+        <view class="p-index-ask-box">
+          <view class="p-index-ask" :class="{ activeColorRight: activeColorsRight }" @click="activeColorRight">
+            <text class="p-index-ask-text">是</text>
+            <!-- <img class="p-ask-tipsimg"  /> -->
+          </view>
         </view>
-        <view
-          class="p-index-ask"
-          :class="{ activeColorNo: activeColorsNo }"
-          @click="activeColorNo"
-        >
-          <text>否</text>
-          <!-- <img class="p-ask-tipsimg"  /> -->
+        <view class="p-index-ask-box">
+          <view class="p-index-ask" :class="{ activeColorNo: activeColorsNo }" @click="activeColorNo">
+            <text class="p-index-ask-text">否</text>
+            <!-- <img class="p-ask-tipsimg"  /> -->
+          </view>
         </view>
         <view class="p-change-ask">
           <view @click="beforequestion">
@@ -43,12 +39,7 @@
       </view>
     </view>
     <view class="p-button">
-      <img
-        v-if="!showNextquestion"
-        @click="addInfo"
-        class="p-contennt-button"
-        src="../../static/tijiaobutton.png"
-      />
+      <img v-if="!showNextquestion" @click="addInfo" class="p-contennt-button" src="../../static/tijiaobutton.png" />
       <!-- <img v-else @click="nextquestion" class="p-contennt-button" src="../../static/nextquestion.png"> -->
     </view>
     <view v-show="isJoin" @touchmove.stop.prevent>
@@ -58,42 +49,18 @@
       <view class="p-tip">
         <view class="p-tip-box">
           <text>提交确认</text>
-          <img
-            @click="isJoin = false"
-            class="p-tip-close"
-            src="../../static/sanchu.png"
-          />
+          <img @click="isJoin = false" class="p-tip-close" src="../../static/sanchu.png" />
           <form>
-            <input
-              class="p-input"
-              v-model="username"
-              type="text"
-              placeholder-style="color:#9fa6b5"
-              placeholder="请输入您的姓名"
-            />
-            <input
-              class="p-input"
-              v-model="number"
-              type="number"
-              placeholder-style="color:#9fa6b5"
-              placeholder="请输入您的电话号码"
-            />
-            <input
-              class="p-input"
-              v-model="position"
-              type="text"
-              placeholder-style="color:#9fa6b5"
-              placeholder="请输入您的职位"
-            />
+            <input class="p-input" v-model="username" type="text" placeholder-style="color:#9fa6b5"
+              placeholder="请输入您的姓名" />
+            <input class="p-input" v-model="number" type="number" placeholder-style="color:#9fa6b5"
+              placeholder="请输入您的电话号码" />
+            <input class="p-input" v-model="position" type="text" placeholder-style="color:#9fa6b5"
+              placeholder="请输入您的职位" />
           </form>
         </view>
         <view class="p-tip-submit">
-          <button
-            type="primary"
-            class="p-tip-submit-button"
-            :disabled="checkInput"
-            @click="submitUserInfo"
-          >
+          <button type="primary" class="p-tip-submit-button" :disabled="checkInput" @click="submitUserInfo">
             提交
           </button>
         </view>
@@ -121,6 +88,7 @@ export default {
       position: "",
       isJoin: false, // 弹窗显隐
       islastItem: false, //最后一个提交
+      flag: true//节流
     };
   },
   onLoad() {
@@ -148,30 +116,38 @@ export default {
       }
     },
     activeColorRight() {
-      this.$set(this.notWritedList[0], "ischoose", "1");
-      this.activeColorsRight = true;
-      if (this.activeColorsNo) {
-        this.activeColorsNo = !this.activeColorsNo;
+      if (this.flag) {
+        this.$set(this.notWritedList[0], "ischoose", "1");
+        this.activeColorsRight = true;
+        if (this.activeColorsNo) {
+          this.activeColorsNo = !this.activeColorsNo;
+        }
+        setTimeout(
+          () => {
+            this.nextquestion();
+          },
+          500
+        );
+        this.flag = false
+        setTimeout(() => this.flag = true, 500)
       }
-      setTimeout(
-        function () {
-          this.nextquestion();
-        }.bind(this),
-        500
-      );
     },
     activeColorNo() {
-      this.$set(this.notWritedList[0], "ischoose", "0");
-      this.activeColorsNo = true;
-      if (this.activeColorsRight) {
-        this.activeColorsRight = !this.activeColorsRight;
+      if (this.flag) {
+        this.$set(this.notWritedList[0], "ischoose", "0");
+        this.activeColorsNo = true;
+        if (this.activeColorsRight) {
+          this.activeColorsRight = !this.activeColorsRight;
+        }
+        setTimeout(
+          () => {
+            this.nextquestion();
+          },
+          500
+        );
+        this.flag = false
+        setTimeout(() => this.flag = true, 500)
       }
-      setTimeout(
-        function () {
-          this.nextquestion();
-        }.bind(this),
-        500
-      );
     },
     nextquestion() {
       if (this.activeColorsNo || this.activeColorsRight) {
@@ -190,16 +166,19 @@ export default {
       }
     },
     beforequestion() {
-      let hasWritedItem = this.hasWritedList.pop();
-      console.log(hasWritedItem.ischoose);
-      if (hasWritedItem.ischoose == "1") {
-        this.activeColorsRight = true;
-        this.activeColorsNo = false;
-      } else {
-        this.activeColorsNo = true;
-        this.activeColorsRight = false;
+      if (this.flag) {
+        let hasWritedItem = this.hasWritedList.pop();
+        if (hasWritedItem.ischoose == "1") {
+          this.activeColorsRight = true;
+          this.activeColorsNo = false;
+        } else {
+          this.activeColorsNo = true;
+          this.activeColorsRight = false;
+        }
+        this.notWritedList.unshift(hasWritedItem);
+        this.flag = false
+        setTimeout(() => this.flag = true, 800)
       }
-      this.notWritedList.unshift(hasWritedItem);
     },
     addInfo() {
       if (
@@ -318,7 +297,7 @@ export default {
           key: "usernumber",
           data: this.number,
         });
-        this.sendDingding()
+        this.sendDingding();
         uni.redirectTo({
           url: `../characterAnalysis/characterAnalysis?number=${this.number}`,
         });
@@ -353,7 +332,7 @@ export default {
           },
         },
         header: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       });
     },
@@ -394,46 +373,66 @@ export default {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
+
   .p-contennt-body {
     height: 80vh;
     border-radius: 30rpx;
     background-color: #ffffff;
+
     .p-contennt-item {
       margin: 50rpx 40rpx;
+
       .p-index-item {
         display: flex;
         align-items: flex-end;
+
         .p-item-counttext {
           height: 84rpx;
           font-size: 70rpx;
         }
+
         .p-item-text {
           font-size: $font-size-title;
           color: $text-color-assist;
         }
       }
+
       .p-index-border {
         margin: 40rpx 0;
         height: 10rpx;
         border-radius: 50rpx;
         background-color: #9775ff;
       }
+
       .p-index-question {
         height: 140rpx;
         font-size: 38rpx;
       }
+
       .p-index-tips {
         font-size: $font-size-text;
         color: $text-color-assist;
         margin: 30rpx 0;
       }
+
+      .p-index-ask-box {
+        background-color: #f5f5f5;
+        border-radius: 20rpx;
+      }
+
       .p-index-ask {
+        width: 100%;
         position: relative;
         font-size: 36rpx;
         background-color: #f5f5f5;
         margin: 60rpx 0;
-        padding: 40rpx 40rpx;
+        padding: 40rpx 0;
         border-radius: 20rpx;
+
+        .p-index-ask-text {
+          margin: 0 40rpx;
+        }
+
         .p-ask-tipsimg {
           position: absolute;
           height: 50rpx;
@@ -441,18 +440,27 @@ export default {
           top: 76rpx;
         }
       }
+
       .activeColorRight {
         background-color: #ece1f8be;
-        animation: load 0.4s 1 linear forwards;
+        animation: load 0.5s 1 ease-in-out forwards;
       }
+
       @keyframes load {
-		    0% { width: 0; }
-		    100% { width: 81%;  }
-		  }
+        0% {
+          width: 0;
+        }
+
+        100% {
+          width: 100%;
+        }
+      }
+
       .activeColorNo {
         background-color: #fff0cf;
-        animation: load 0.4s 1 linear forwards;
+        animation: load 0.4s 1 ease forwards;
       }
+
       .p-change-ask {
         margin: 120rpx 20rpx;
         display: flex;
@@ -462,17 +470,20 @@ export default {
       }
     }
   }
+
   .p-button {
     width: 100%;
     margin: 5% 0;
     display: flex;
     justify-content: center;
+
     .p-contennt-button {
       height: 100rpx;
       width: 400rpx;
       border-radius: 50rpx;
     }
   }
+
   .p-mask {
     z-index: 99;
     background: rgba(0, 0, 0, 0.6);
@@ -482,6 +493,7 @@ export default {
     left: 0;
     top: 0;
   }
+
   .p-tip {
     width: 100%;
     height: 70vh;
@@ -492,6 +504,7 @@ export default {
     left: 50%;
     top: 75%;
     transform: translate(-50%, -25%);
+
     .p-tip-box {
       height: 400rpx;
       display: flex;
@@ -499,13 +512,16 @@ export default {
       flex-direction: column;
       align-items: center;
       margin: 30rpx 50rpx 0 50rpx;
+
       .p-tip-close {
         position: absolute;
         top: 32rpx;
         right: 74rpx;
       }
+
       form {
         width: 80vw;
+
         .p-input {
           margin: 35rpx 0;
           padding: 25rpx 30rpx;
@@ -514,8 +530,10 @@ export default {
         }
       }
     }
+
     .p-tip-submit {
       border-top: $border-color-line solid 4rpx;
+
       .p-tip-submit-button {
         margin: 30rpx auto;
         padding: 10rpx 0;
