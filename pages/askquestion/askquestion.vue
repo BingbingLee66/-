@@ -311,30 +311,15 @@ export default {
     },
     sendDingding() {
       let timestamp = new Date().getTime();
-      let username = this.username;
-      let position = this.position;
       let key =
         "SEC0b506053788be24da60d71b195e0b5c2d2cafe815cef8ddf345ec9fa766af2eb";
       let stringSign = timestamp + "\n" + key;
       let hash = CryptoJS.HmacSHA256(stringSign, key);
       let sign = CryptoJS.enc.Base64.stringify(hash);
-      uni.request({
-        url: `/dpc/robot/send?access_token=e04f7023ec59ad0bda0c6f832402d1e43bdc5b77e6f1f62af2fbec58debed95c&timestamp=${timestamp}&sign=${sign}`,
-        method: "POST",
-        data: {
-          msgtype: "actionCard",
-          actionCard: {
-            title: `${username}的报告生成啦~~`,
-            text: ` ${username} \n\n职位:${position}`,
-            singleTitle: "查看报告",
-            singleURL:
-              "https://static-744e5d5e-393d-4639-b783-616676ea9a34.bspapp.com/#/pages/characterAnalysis/characterAnalysis",
-          },
-        },
-        header: {
-          "Content-Type": "application/json",
-        },
-      });
+      uniCloud.callFunction({
+          name: 'mydata',
+          data: { number: this.number, username: this.username, timestamp: timestamp, position: this.position, sign: sign }
+        })
     },
   },
   computed: {

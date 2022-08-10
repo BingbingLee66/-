@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="p-content">
-      <view class="p-index-title" @click="test">测评结果</view>
+      <view class="p-index-title">测评结果</view>
       <view class="p-index-body">
         <view class="p-text">类型</view>
         <img class="p-index-img" :src="mainInfo.imgInfo" />
@@ -136,7 +136,7 @@ export default {
     };
   },
   onLoad(query) {
-    this.usernumber=query.number
+    this.usernumber = query.number
     uni.showLoading({
       title: "加载中",
       mask: true,
@@ -148,7 +148,7 @@ export default {
       uni.hideLoading();
     }, 1500);
   },
-  onUnload() {},
+  onUnload() { },
   methods: {
     async getdata(query) {
       try {
@@ -167,6 +167,8 @@ export default {
         let res2 = await db.collection("analysis").get();
         this.analysisInfoList = res2.result.data;
         this.userInfo = res.result.data[0].askInfo;
+        this.username = res.result.data[0].username
+        this.position = res.result.data[0].position
         let sum = res.result.data[0].sum;
         this.chartData.series[0].data = sum;
         let main = sum.indexOf(Math.max.apply(Math, sum)) + 1;
@@ -178,35 +180,23 @@ export default {
         return 0;
       }
     },
-    test() {
-      let timestamp = new Date().getTime();
-      let username = this.username;
-      let position = this.position;
-      let number = this.usernumber;
-      let key =
-        "SEC0b506053788be24da60d71b195e0b5c2d2cafe815cef8ddf345ec9fa766af2eb";
-      let stringSign = timestamp + "\n" + key;
-      let hash = CryptoJS.HmacSHA256(stringSign, key);
-      let sign = CryptoJS.enc.Base64.stringify(hash);
-      uni.request({
-        url: `/dpc/robot/send?access_token=e04f7023ec59ad0bda0c6f832402d1e43bdc5b77e6f1f62af2fbec58debed95c&timestamp=${timestamp}&sign=${sign}`,
-        method: "POST",
-        data: {
-          msgtype: "actionCard",
-          actionCard: {
-            title: "您的报告生成啦~~",
-            text: `![screenshot](https://static-744e5d5e-393d-4639-b783-616676ea9a34.bspapp.com/static/img/dingdingbg.48682f49.png) \n #### ${username}  \n\n ${position}`,
-            singleTitle: "查看报告",
-            singleURL: `https://static-744e5d5e-393d-4639-b783-616676ea9a34.bspapp.com/#/pages/characterAnalysis/characterAnalysis?number=${number} `,
-          },
-        },
-        header: {
-          "Content-Type": "application/json; charset=utf-8",
-          timestamp: timestamp,
-          sign: sign,
-        },
-      });
-    },
+    // test() {
+    //   let timestamp = new Date().getTime();
+    //   let username = this.username;
+    //   let position = this.position;
+    //   let number = this.usernumber;
+    //   let key =
+    //     "SEC0b506053788be24da60d71b195e0b5c2d2cafe815cef8ddf345ec9fa766af2eb";
+    //   let stringSign = timestamp + "\n" + key;
+    //   let hash = CryptoJS.HmacSHA256(stringSign, key);
+    //   let sign = CryptoJS.enc.Base64.stringify(hash);
+    //   uniCloud.callFunction({
+    //     name: 'mydata',
+    //     data: { number: this.usernumber, username: this.username, timestamp: timestamp, position: this.position, sign: sign }
+    //   })
+    //     .then(res => {
+    //     });
+    // },
   },
 };
 </script>
@@ -219,6 +209,7 @@ export default {
   font-size: 30rpx;
   flex-direction: column;
   background-image: url("../../static/bg@mb.png");
+
   .p-text {
     font-style: italic;
     margin: 20rpx 0;
@@ -226,12 +217,14 @@ export default {
     border-radius: 30rpx;
     background: linear-gradient(135deg, #d1a1c6, #e9c1a0);
   }
+
   .p-index-title {
     text-align: center;
     color: #fff6fb;
     font-size: 45rpx;
     margin: 30rpx 0;
   }
+
   .p-index-body {
     margin: 20rpx 0;
     width: 100%;
@@ -243,12 +236,15 @@ export default {
     background-color: #fff6fb;
     color: #3e3e3e;
     box-shadow: 24rpx 24rpx 4rpx 2rpx rgba(78, 78, 225, 0.2);
+
     .p-index-img {
       height: 300rpx;
     }
+
     .p-index-text-title {
       color: #cc97b0;
     }
+
     .p-index-who {
       margin: 20rpx 40rpx;
       background-color: #f3edf5;
@@ -259,11 +255,13 @@ export default {
       justify-content: space-between;
       font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
         sans-serif;
+
       .p-index-text {
         margin: 35rpx 0;
       }
     }
   }
+
   .p-index-ucharts {
     box-shadow: 24rpx 24rpx 4rpx 2rpx rgba(78, 78, 225, 0.2);
     margin: 50rpx 0;
